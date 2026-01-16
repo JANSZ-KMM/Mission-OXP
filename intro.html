@@ -37,7 +37,7 @@
             bottom: 22%;
             left: 0;
             right: 0;
-            height: 36px; 
+            height: 36px;
             display: flex;
             pointer-events: none;
             padding: 0 3rem;
@@ -103,7 +103,7 @@
                 { text: "ATP synthase", type: "protein" }
             ];
 
-            // Only retain the first audio for step 1
+            // Only first step audio remains for step 1
             const speakStep = (stepNumber) => {
                 const messages = {
                     0: "Identify the stages of oxidative phosphorylation?",
@@ -125,3 +125,35 @@
                     audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
                 }
                 if (audioContextRef.current.state === 'suspended') {
+                    await audioContextRef.current.resume();
+                }
+            };
+
+            const playSound = async (type) => {
+                try {
+                    await initAudio();
+                    const ctx = audioContextRef.current;
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+
+                    if (type === 'correct') {
+                        osc.frequency.setValueAtTime(600, ctx.currentTime);
+                        osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.1);
+                        gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                    } else {
+                        osc.type = 'sawtooth';
+                        osc.frequency.setValueAtTime(150, ctx.currentTime);
+                        gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                    }
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.2);
+                } catch(e) {}
+            };
+
+            useEffect(() => {
+                const shuffled = [...gameSequence].map(item => item.text).sort(() => Math.random() - 0.5);
+                setAvailableTerms(shuffled);
+                speakStep(0);
+            }, []
