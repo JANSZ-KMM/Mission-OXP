@@ -1,100 +1,296 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THE GREAT ATP CONQUEST - Hub</title>
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>THE GREAT ATP CONQUEST - Hub</title>
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
 
-        @keyframes title-glow {
-            0%, 100% { text-shadow: 0 0 25px rgba(56, 189, 248, 0.5), 0 4px 12px rgba(0,0,0,0.9); }
-            50% { text-shadow: 0 0 45px rgba(56, 189, 248, 0.8), 0 4px 12px rgba(0,0,0,0.9); }
-        }
-        
-        body { 
-            background-color: #020617; 
-            margin: 0; 
-            overflow: hidden; 
-            height: 100vh; 
-            font-family: 'Inter', sans-serif;
-        }
-        
-        .conquest-bg {
-            background-image: 
-                radial-gradient(circle at center, rgba(2, 6, 23, 0.1) 0%, rgba(2, 6, 23, 0.6) 100%),
-                url('background.png');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
 
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(12px) saturate(160%);
-            -webkit-backdrop-filter: blur(12px) saturate(160%);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 2.5rem;
-            padding: 2.5rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            max-width: 900px;
-            width: 100%;
-            max-height: 90vh;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
+    @keyframes title-glow {
+      0%, 100% { text-shadow: 0 0 25px rgba(56,189,248,0.5), 0 4px 12px rgba(0,0,0,0.9); }
+      50% { text-shadow: 0 0 45px rgba(56,189,248,0.8), 0 4px 12px rgba(0,0,0,0.9); }
+    }
 
-        .scroll-container {
-            overflow-y: auto;
-            padding-right: 10px;
-        }
+    body {
+      background-color: #020617;
+      margin: 0;
+      overflow: hidden;
+      height: 100vh;
+      font-family: 'Inter', sans-serif;
+    }
 
-        /* Custom Scrollbar */
-        .scroll-container::-webkit-scrollbar {
-            width: 6px;
-        }
-        .scroll-container::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-        }
-        .scroll-container::-webkit-scrollbar-thumb {
-            background: rgba(56, 189, 248, 0.3);
-            border-radius: 10px;
-        }
+    .conquest-bg {
+      background-image:
+        radial-gradient(circle at center, rgba(2,6,23,0.1) 0%, rgba(2,6,23,0.6) 100%),
+        url('background.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
 
-        .hub-button {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
+    .glass-panel {
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(12px) saturate(160%);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 2.5rem;
+      padding: 2.5rem;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+      max-width: 900px;
+      width: 100%;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-        .hub-button:hover {
-            transform: translateY(-4px);
-            background: rgba(56, 189, 248, 0.25);
-            border-color: rgba(56, 189, 248, 0.6);
-            box-shadow: 0 10px 30px rgba(56, 189, 248, 0.3);
-        }
+    .hub-button {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      text-decoration: none;
+    }
 
-        .roman-numeral {
-            background: linear-gradient(135deg, #ffffff 0%, #38bdf8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+    .hub-button:hover {
+      transform: translateY(-4px);
+      background: rgba(56,189,248,0.25);
+      border-color: rgba(56,189,248,0.6);
+      box-shadow: 0 10px 30px rgba(56,189,248,0.3);
+    }
 
-        .animate-title {
-            animation: title-glow 4s ease-in-out infinite;
-        }
+    .roman-numeral {
+      background: linear-gradient(135deg, #ffffff 0%, #38bdf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
 
-        .subtitle-shadow {
-            text-shad
+    .animate-title {
+      animation: title-glow 4s ease-in-out infinite;
+    }
+
+    .subtitle-shadow {
+      text-shadow: 0 2px 10px rgba(0,0,0,1), 0 0 20px rgba(0,0,0,0.8);
+      background: radial-gradient(circle, rgba(2,6,23,0.7) 0%, rgba(2,6,23,0) 80%);
+      display: inline-block;
+      padding: 0.5rem 2rem;
+      border-radius: 2rem;
+    }
+
+    .name-input {
+      background: transparent;
+      border-bottom: 2px solid rgba(56,189,248,0.5);
+      color: #38bdf8;
+      outline: none;
+      width: 180px;
+      font-weight: 800;
+      transition: border-color 0.3s;
+    }
+
+    .name-input:focus {
+      border-bottom-color: #ffffff;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root" class="h-full"></div>
+
+  <script type="text/babel">
+    const { useRef } = React;
+
+    const HubButton = ({ title, roman, subtext, link, onHover, onNavigate }) => (
+      <a
+        href={link}
+        onMouseEnter={onHover}
+        onClick={(e) => {
+          e.preventDefault();
+          onNavigate(link);
+        }}
+        className="hub-button block w-full mb-4 p-5 rounded-2xl flex items-center gap-6 group cursor-pointer"
+      >
+        <div className="flex-shrink-0 w-16 h-16 rounded-xl bg-slate-900/60 flex items-center justify-center text-3xl font-black roman-numeral border border-white/20">
+          {roman}
+        </div>
+        <div className="text-left flex-1">
+          <h2 className="text-xl font-black text-white tracking-tight group-hover:text-sky-200 transition-colors" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>
+            {roman}: {title}
+          </h2>
+          <p className="text-sky-300 text-lg font-bold tracking-wide mt-0.5" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.9)' }}>
+            {subtext}
+          </p>
+        </div>
+        <div className="flex items-center justify-center w-10 h-10 rounded-full bg-white/20 group-hover:bg-sky-400/40 transition-all">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-white">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </div>
+      </a>
+    );
+
+    const App = () => {
+      const audioCtxRef = useRef(null);
+
+      const getCtx = async () => {
+        if (!audioCtxRef.current) {
+          audioCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtxRef.current.state === 'suspended') {
+          await audioCtxRef.current.resume();
+        }
+        return audioCtxRef.current;
+      };
+
+      const playImpact = async () => {
+        const ctx = await getCtx();
+        const now = ctx.currentTime;
+        const master = ctx.createGain();
+        master.gain.setValueAtTime(1.5, now);
+        master.connect(ctx.destination);
+
+        const osc = ctx.createOscillator();
+        const g = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(60, now);
+        osc.frequency.exponentialRampToValueAtTime(1, now + 1.2);
+        g.gain.setValueAtTime(1.0, now);
+        g.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+        osc.connect(g);
+        g.connect(master);
+        osc.start();
+        osc.stop(now + 1.2);
+      };
+
+      const playEpicHover = async (freq = 110) => {
+        const ctx = await getCtx();
+        const now = ctx.currentTime;
+        const master = ctx.createGain();
+        master.gain.setValueAtTime(0.9, now);
+        master.connect(ctx.destination);
+
+        const osc = ctx.createOscillator();
+        const g = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(freq, now);
+        g.gain.setValueAtTime(0, now);
+        g.gain.linearRampToValueAtTime(0.5, now + 0.1);
+        g.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+        osc.connect(g);
+        g.connect(master);
+        osc.start();
+        osc.stop(now + 0.6);
+      };
+
+      const playNameFinishSound = async () => {
+        const ctx = await getCtx();
+        const now = ctx.currentTime;
+        const master = ctx.createGain();
+        master.gain.setValueAtTime(1.0, now);
+        master.connect(ctx.destination);
+
+        const notes = [523.25, 659.25, 783.99];
+        notes.forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          const g = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + (i * 0.1));
+          g.gain.setValueAtTime(0, now + (i * 0.1));
+          g.gain.linearRampToValueAtTime(0.4, now + (i * 0.1) + 0.05);
+          g.gain.exponentialRampToValueAtTime(0.001, now + (i * 0.1) + 0.4);
+          osc.connect(g);
+          g.connect(master);
+          osc.start(now + (i * 0.1));
+          osc.stop(now + (i * 0.1) + 0.4);
+        });
+      };
+
+      const handleNameBlur = (e) => {
+        if (e.target.value.trim().length > 0) playNameFinishSound();
+      };
+
+      const handleNameKeyDown = (e) => {
+        if (e.key === 'Enter') e.target.blur();
+      };
+
+      const navigate = async (url) => {
+        await playImpact();
+        setTimeout(() => {
+          window.location.href = url;
+        }, 500);
+      };
+
+      return (
+        <div className="conquest-bg" onClick={() => getCtx()}>
+          <div className="glass-panel text-center">
+            <header className="mb-8 flex-shrink-0">
+              <h1 className="text-4xl md:text-5xl font-black text-white tracking-tighter animate-title drop-shadow-2xl">
+                THE GREAT <span className="text-sky-400">ATP</span> CONQUEST
+              </h1>
+              <div className="h-1.5 w-24 bg-sky-400/70 mx-auto mt-4 rounded-full shadow-lg"></div>
+
+              <div className="mt-6 flex flex-col items-center gap-3">
+                <div className="text-xl text-sky-200 font-bold flex items-center gap-3">
+                  Hey,
+                  <input
+                    type="text"
+                    className="name-input text-center"
+                    placeholder="Write your name"
+                    onBlur={handleNameBlur}
+                    onKeyDown={handleNameKeyDown}
+                  />
+                </div>
+                <div>
+                  <p className="subtitle-shadow text-xl text-white font-extrabold italic tracking-tight">
+                    Let's master oxidative phosphorylation!
+                  </p>
+                </div>
+              </div>
+            </header>
+
+            <div className="max-w-2xl mx-auto w-full overflow-y-auto pr-2">
+              <HubButton
+                roman="I"
+                title="The Mitochondrial Command Center"
+                subtext="The Components"
+                link="intro.html"
+                onHover={() => playEpicHover(82.41)}
+                onNavigate={navigate}
+              />
+
+              <HubButton
+                roman="II"
+                title="The Amazing Electron Trail"
+                subtext="Electron Transport Chain"
+                link="etc.html"
+                onHover={() => playEpicHover(98.0)}
+                onNavigate={navigate}
+              />
+
+              <HubButton
+                roman="III"
+                title="The Proton Odyssey: ATP Victory"
+                subtext="Chemiosmosis"
+                link="chemiosmosis.html"
+                onHover={() => playEpicHover(110.0)}
+                onNavigate={navigate}
+              />
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
