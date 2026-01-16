@@ -3,398 +3,239 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Great ATP Conquest</title>
+    <title>THE GREAT ATP CONQUEST - Hub</title>
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .animate-spin-slow { animation: spin-slow 8s linear infinite; }
-        .cursor-grab:active { cursor: grabbing; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+
+        @keyframes title-glow {
+            0%, 100% { text-shadow: 0 0 25px rgba(56, 189, 248, 0.5), 0 4px 12px rgba(0,0,0,0.9); }
+            50% { text-shadow: 0 0 45px rgba(56, 189, 248, 0.8), 0 4px 12px rgba(0,0,0,0.9); }
+        }
         
         body { 
             background-color: #020617; 
             margin: 0; 
             overflow: hidden; 
             height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
             font-family: 'Inter', sans-serif;
         }
         
         .conquest-bg {
-            background-color: #020617;
             background-image: 
-                linear-gradient(rgba(15, 23, 42, 0.2), rgba(15, 23, 42, 0.4)),
-                url('background.png'), 
-                linear-gradient(45deg, #0f172a 0%, #1e293b 100%);
+                radial-gradient(circle at center, rgba(2, 6, 23, 0.1) 0%, rgba(2, 6, 23, 0.6) 100%),
+                url('background.png');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            position: relative;
             width: 100%;
             height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 1rem;
         }
 
         .glass-panel {
-            background: rgba(15, 23, 42, 0.45);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 2.5rem;
-            padding: 3rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
-            z-index: 10;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(12px) saturate(160%);
+            -webkit-backdrop-filter: blur(12px) saturate(160%);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 2rem;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             max-width: 800px;
-        }
-
-        .text-step-instruction { 
-            font-size: 22px; 
-            line-height: 1.5;
-            color: #1e293b;
-        }
-        
-        .protein-label { 
-            font-size: 11px; 
-            line-height: 1.1; 
-            font-weight: 800;
-        }
-
-        /* Bracket Styles */
-        .bracket-container {
-            position: absolute;
-            bottom: 25%;
-            left: 5%;
-            right: 5%;
-            height: 40px;
-            display: flex;
-            pointer-events: none;
-        }
-        .bracket {
-            border: 3px solid #0f172a;
-            border-top: none;
+            width: 95%;
+            max-height: 95vh;
+            overflow-y: auto;
             position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            padding-bottom: 5px;
-            font-weight: 900;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: #0f172a;
+        }
+
+        .hub-button {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .hub-button:hover {
+            transform: translateY(-4px);
+            background: rgba(56, 189, 248, 0.25);
+            border-color: rgba(56, 189, 248, 0.6);
+            box-shadow: 0 10px 30px rgba(56, 189, 248, 0.3);
+        }
+
+        .roman-numeral {
+            background: linear-gradient(135deg, #ffffff 0%, #38bdf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .animate-title {
+            animation: title-glow 4s ease-in-out infinite;
+        }
+
+        .subtitle-shadow {
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 1), 0 0 20px rgba(0, 0, 0, 0.8);
+            background: radial-gradient(circle, rgba(2, 6, 23, 0.7) 0%, rgba(2, 6, 23, 0) 80%);
+            display: inline-block;
+            padding: 0.5rem 2rem;
+            border-radius: 2rem;
+        }
+
+        .name-input {
+            background: transparent;
+            border-bottom: 2px solid rgba(56, 189, 248, 0.5);
+            color: #38bdf8;
+            outline: none;
+            width: 180px;
+            font-weight: 800;
+            transition: border-color 0.3s;
+        }
+
+        .name-input:focus {
+            border-bottom-color: #ffffff;
+        }
+
+        /* Hide scrollbar but keep functionality */
+        .glass-panel::-webkit-scrollbar {
+            display: none;
+        }
+        .glass-panel {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
     </style>
 </head>
-<body>
+<body onclick="void(0)">
     <div id="root" class="h-full"></div>
 
     <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
+        const { useState, useRef, useEffect } = React;
 
-        const App = () => {
-            const [gameState, setGameState] = useState('landing'); // 'landing', 'labels', 'electrons'
-            const [currentStep, setCurrentStep] = useState(0);
-            const [completedTerms, setCompletedTerms] = useState([]);
-            const [availableTerms, setAvailableTerms] = useState([]);
-            const audioContextRef = useRef(null);
-
-            const gameSequence = [
-                { text: "electron transport chain", type: "essay" },
-                { text: "chemiosmosis", type: "essay" },
-                { text: "inner membrane of mitochondria", type: "essay" },
-                { text: "NADH dehydrogenase", type: "protein" },
-                { text: "succinate dehydrogenase", type: "protein" },
-                { text: "coenzyme Q", type: "protein" },
-                { text: "cytochrome c reductase", type: "protein" },
-                { text: "cytochrome c", type: "protein" },
-                { text: "cytochrome c oxidase", type: "protein" },
-                { text: "ATP synthase", type: "protein" }
-            ];
-
-            const initAudio = async () => {
-                if (!audioContextRef.current) {
-                    audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)({
-                        sampleRate: 24000
-                    });
-                }
-                if (audioContextRef.current.state === 'suspended') {
-                    await audioContextRef.current.resume();
-                }
-                return audioContextRef.current;
-            };
-
-            const playSound = async (type) => {
-                try {
-                    const ctx = await initAudio();
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
-
-                    if (type === 'correct') {
-                        osc.type = 'sine';
-                        osc.frequency.setValueAtTime(523.25, ctx.currentTime);
-                        osc.frequency.exponentialRampToValueAtTime(1046.50, ctx.currentTime + 0.1);
-                        gain.gain.setValueAtTime(0.2, ctx.currentTime);
-                        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
-                    } else {
-                        osc.type = 'sawtooth';
-                        osc.frequency.setValueAtTime(120, ctx.currentTime);
-                        osc.frequency.linearRampToValueAtTime(40, ctx.currentTime + 0.2);
-                        gain.gain.setValueAtTime(0.2, ctx.currentTime);
-                        gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.2);
-                    }
-                    osc.start();
-                    osc.stop(ctx.currentTime + 0.3);
-                } catch(e) {}
-            };
-
-            const speakStep = (stepNumber) => {
-                if (gameState !== 'labels') return;
-                
-                const messages = {
-                    1: "Step 1: Identify the two main stages of oxidative phosphorylation.",
-                    2: "Step 2: Locate where this process occurs in the cell.",
-                    3: "Step 3: Identify the components of the electron transport chain.",
-                    4: "Step 4: Finally, identify the enzyme involved in chemiosmosis."
-                };
-
-                const msgMap = {0: 1, 1: 1, 2: 2, 3: 3, 4: 3, 5: 3, 6: 3, 7: 3, 8: 3, 9: 4};
-                const text = messages[msgMap[stepNumber]];
-                if (!text) return;
-
-                window.speechSynthesis.cancel();
-                
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.rate = 0.9; 
-                utterance.pitch = 1.1; 
-                
-                const voices = window.speechSynthesis.getVoices();
-                const preferredVoice = voices.find(v => v.lang.includes('en-GB') || v.lang.includes('en-US'));
-                if (preferredVoice) utterance.voice = preferredVoice;
-
-                window.speechSynthesis.speak(utterance);
-            };
-
-            useEffect(() => {
-                const shuffled = [...gameSequence].map(item => item.text).sort(() => Math.random() - 0.5);
-                setAvailableTerms(shuffled);
-            }, []);
-
-            useEffect(() => {
-                if (gameState === 'labels' && [0, 2, 3, 9].includes(currentStep)) {
-                    speakStep(currentStep);
-                }
-            }, [currentStep, gameState]);
-
-            const handleDrop = async (e, targetName) => {
-                e.preventDefault();
-                const draggedText = e.dataTransfer.getData("text");
-                const expected = gameSequence[currentStep];
-
-                if (draggedText.toLowerCase() === expected.text.toLowerCase()) {
-                    playSound('correct');
-                    setCompletedTerms([...completedTerms, draggedText]);
-                    setAvailableTerms(availableTerms.filter(t => t !== draggedText));
-                    setCurrentStep(currentStep + 1);
-                } else {
-                    playSound('wrong');
-                }
-            };
-
-            const startGame = async () => {
-                await initAudio(); 
-                setGameState('labels');
-                setTimeout(() => speakStep(0), 500);
-            };
-
-            const goToElectrons = () => {
-                setGameState('electrons');
-            };
-
-            if (gameState === 'landing') {
-                return (
-                    <div className="conquest-bg h-full w-full">
-                        <div className="glass-panel flex flex-col items-center mx-4 text-center">
-                            <h1 className="text-5xl md:text-7xl font-black mb-6 text-sky-400 uppercase tracking-tighter drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">
-                                THE GREAT ATP CONQUEST
-                            </h1>
-                            <p className="mb-10 text-lg md:text-xl text-white font-bold italic tracking-wide drop-shadow-md opacity-90">
-                                "Let's master oxidative phosphorylation!"
-                            </p>
-                            
-                            <button 
-                                onClick={startGame} 
-                                className="px-10 py-5 bg-sky-600 hover:bg-sky-500 rounded-full font-black text-xl md:text-2xl transition-all shadow-[0_8px_0_0_rgb(7,89,133)] active:shadow-none active:translate-y-2 border-b-2 border-sky-300/20 flex items-center gap-4 uppercase tracking-widest cursor-pointer group text-white"
-                            >
-                                <span>Begin the conquest!</span>
-                            </button>
-                        </div>
-                    </div>
-                );
-            }
-
-            if (gameState === 'electrons') {
-                return (
-                    <div className="flex flex-col h-full bg-slate-950 text-white p-8 items-center justify-center">
-                        <h1 className="text-4xl font-black mb-4 uppercase tracking-tighter text-sky-400">Phase 2: Flow of Electrons</h1>
-                        <p className="text-xl mb-8 opacity-80 max-w-2xl text-center">
-                            In this stage, you will track the high-energy electrons as they pass through the protein complexes from NADH and FADH₂.
-                        </p>
-                        <div className="w-full max-w-4xl h-64 border-4 border-dashed border-sky-900 rounded-[3rem] flex items-center justify-center bg-slate-900/50">
-                            <p className="text-slate-500 font-bold italic">Module under construction: Flow animation coming soon...</p>
-                        </div>
-                        <button 
-                            onClick={() => setGameState('labels')}
-                            className="mt-8 px-6 py-3 bg-slate-800 rounded-full text-sm font-bold uppercase tracking-widest border border-slate-700 hover:bg-slate-700"
-                        >
-                            Return to Command Center
-                        </button>
-                    </div>
-                );
-            }
-
-            return (
-                <div className="flex flex-col h-full bg-slate-950 text-slate-900 p-4">
-                    <div className="flex justify-between items-center mb-4 px-2">
-                        <div className="w-32"></div>
-                        <div className="text-center">
-                            <h1 className="text-3xl font-black text-white uppercase tracking-tighter">The Mitochondrial Command Center</h1>
-                            <p className="text-xs text-sky-400 font-bold uppercase tracking-[0.3em] animate-pulse">Drag labels to complete the diagram</p>
-                        </div>
-                        <button 
-                            onClick={() => speakStep(currentStep)}
-                            className="bg-slate-800 hover:bg-slate-700 text-white px-5 py-2 rounded-full border border-slate-600 transition-all flex items-center gap-2 font-bold text-xs uppercase tracking-wider"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-                            </svg>
-                            <span>Repeat Instruction</span>
-                        </button>
-                    </div>
-
-                    <div className="flex-1 relative border-[8px] border-slate-900 rounded-[2.5rem] overflow-hidden flex flex-col shadow-2xl">
-                        <div className="h-[20%] bg-[#fffbeb] relative flex items-center justify-center border-b-[4px] border-amber-100">
-                            <span className="absolute top-4 right-8 text-[11px] font-black text-black bg-white/80 px-4 py-1.5 rounded-full uppercase tracking-widest shadow-sm">Intermembrane Space</span>
-                        </div>
-
-                        <div className="h-[60%] bg-[#fef08a] relative flex items-center justify-evenly px-8 border-y-[4px] border-amber-300 shadow-inner">
-                            <span className="absolute bottom-4 right-8 text-[11px] font-black text-black bg-white/80 px-4 py-1.5 rounded-full uppercase tracking-widest shadow-sm">Inner Membrane</span>
-                            
-                            <Protein type="large" name="NADH dehydrogenase" active={currentStep===3} done={completedTerms.includes("NADH dehydrogenase")} onDrop={handleDrop} />
-                            <div className="w-4"></div>
-                            <Protein type="small" name="coenzyme Q" active={currentStep===5} done={completedTerms.includes("coenzyme Q")} onDrop={handleDrop} />
-                            <Protein type="large" name="cytochrome c reductase" active={currentStep===6} done={completedTerms.includes("cytochrome c reductase")} onDrop={handleDrop} />
-                            <Protein type="surface" name="cytochrome c" active={currentStep===7} done={completedTerms.includes("cytochrome c")} onDrop={handleDrop} />
-                            <Protein type="large" name="cytochrome c oxidase" active={currentStep===8} done={completedTerms.includes("cytochrome c oxidase")} onDrop={handleDrop} />
-                            <Protein type="turbine" name="ATP synthase" active={currentStep===9} done={completedTerms.includes("ATP synthase")} onDrop={handleDrop} />
-                        </div>
-
-                        <div className="h-[20%] bg-[#bbf7d0] relative border-t-[4px] border-green-300 shadow-inner">
-                            <span className="absolute bottom-4 right-8 text-[11px] font-black text-black bg-white/80 px-4 py-1.5 rounded-full uppercase tracking-widest shadow-sm">Matrix</span>
-                            <div className="absolute top-0 left-[18%] -translate-y-1/2">
-                                <Protein type="peripheral" name="succinate dehydrogenase" active={currentStep===4} done={completedTerms.includes("succinate dehydrogenase")} onDrop={handleDrop} />
-                            </div>
-
-                            {currentStep >= 2 && (
-                                <div className="bracket-container animate-in fade-in duration-500">
-                                    <div className="bracket w-[70%] border-r-0 rounded-bl-xl" style={{ borderLeftWidth: '3px', borderBottomWidth: '3px' }}>
-                                        Electron Transport Chain
-                                    </div>
-                                    <div className="bracket w-[30%] border-l-0 rounded-br-xl" style={{ borderRightWidth: '3px', borderBottomWidth: '3px' }}>
-                                        Chemiosmosis
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-
-                    <div className="mt-4 p-6 bg-white border-[3px] border-sky-100 rounded-[2rem] shadow-xl overflow-y-auto">
-                        <div className="text-step-instruction">
-                            <p className="mb-2">
-                                1. Oxidative phosphorylation consists of <Drop target="electron transport chain" done={completedTerms.includes("electron transport chain")} active={currentStep===0} onDrop={handleDrop} /> and <Drop target="chemiosmosis" done={completedTerms.includes("chemiosmosis")} active={currentStep===1} onDrop={handleDrop} />.
-                            </p>
-                            
-                            {currentStep >= 2 && (
-                                <p className="mb-2 transition-all duration-700 animate-in fade-in slide-in-from-left-4">
-                                    2. This occurs at the <Drop target="inner membrane of mitochondria" done={completedTerms.includes("inner membrane of mitochondria")} active={currentStep===2} onDrop={handleDrop} />.
-                                </p>
-                            )}
-                            
-                            {currentStep >= 3 && (
-                                <p className="mb-2 transition-all duration-700 animate-in fade-in slide-in-from-left-4">
-                                    3. The components of ETC are <Drop target="NADH dehydrogenase" done={completedTerms.includes("NADH dehydrogenase")} active={currentStep===3} onDrop={handleDrop} />, <Drop target="succinate dehydrogenase" done={completedTerms.includes("succinate dehydrogenase")} active={currentStep===4} onDrop={handleDrop} />, <Drop target="coenzyme Q" done={completedTerms.includes("coenzyme Q")} active={currentStep===5} onDrop={handleDrop} />, <Drop target="cytochrome c reductase" done={completedTerms.includes("cytochrome c reductase")} active={currentStep===6} onDrop={handleDrop} />, <Drop target="cytochrome c" done={completedTerms.includes("cytochrome c")} active={currentStep===7} onDrop={handleDrop} /> and <Drop target="cytochrome c oxidase" done={completedTerms.includes("cytochrome c oxidase")} active={currentStep===8} onDrop={handleDrop} />.
-                                </p>
-                            )}
-                            
-                            {currentStep >= 9 && (
-                                <p className="transition-all duration-700 animate-in fade-in slide-in-from-left-4 font-semibold text-slate-900">
-                                    4. Meanwhile, chemiosmosis involves <Drop target="ATP synthase" done={completedTerms.includes("ATP synthase")} active={currentStep===9} onDrop={handleDrop} />.
-                                </p>
-                            )}
-                        </div>
-                    </div>
-
-                    <div className="mt-4 flex flex-wrap gap-2.5 justify-center bg-slate-900 p-4 rounded-3xl shadow-inner overflow-y-auto max-h-24">
-                        {availableTerms.map((t, i) => (
-                            <div key={i} draggable onDragStart={(e) => { e.dataTransfer.setData("text", t); }} className="px-4 py-1.5 bg-sky-500 hover:bg-sky-400 text-white rounded-xl font-bold text-xs cursor-grab active:scale-90 shadow-[0_4px_0_0_rgb(7,89,133)] transition-all uppercase tracking-widest border-b border-sky-300/20">
-                                {t}
-                            </div>
-                        ))}
-                        {availableTerms.length === 0 && (
-                            <button 
-                                onClick={goToElectrons}
-                                className="px-8 py-2 bg-green-600 hover:bg-green-500 text-white font-black uppercase tracking-widest rounded-xl transition-all shadow-[0_4px_0_0_rgb(21,128,61)] active:shadow-none active:translate-y-1 animate-bounce"
-                            >
-                                MISSION ACCOMPLISHED! NEXT PHASE →
-                            </button>
-                        )}
-                    </div>
+        const HubButton = ({ title, roman, subtext, link, onHover, onClick }) => (
+            <a 
+                href={link}
+                onMouseEnter={onHover}
+                onClick={onClick}
+                className="hub-button block w-full mb-4 p-4 rounded-xl flex items-center gap-6 group cursor-pointer"
+            >
+                <div className="flex-shrink-0 w-16 h-16 rounded-xl bg-slate-900/60 flex items-center justify-center text-3xl font-black roman-numeral border border-white/20">
+                    {roman}
                 </div>
-            );
-        };
-
-        const Drop = ({ target, done, active, onDrop }) => (
-            <span onDragOver={e => e.preventDefault()} onDrop={e => onDrop(e, target)} className={`inline-flex items-center justify-center min-w-[140px] px-3 mx-1 rounded-xl transition-all border-2 align-middle font-bold ${done ? "text-green-700 border-green-100 bg-green-50 shadow-sm" : active ? "border-sky-400 border-dashed bg-sky-50 animate-pulse text-transparent h-8" : "border-slate-200 border-dashed bg-slate-50 text-transparent h-8"}`}>
-                {done ? target : ""}
-            </span>
+                <div className="text-left flex-1">
+                    <h2 className="text-xl font-black text-white tracking-tight group-hover:text-sky-200 transition-colors" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>
+                        {roman}: {title}
+                    </h2>
+                    <p className="text-sky-300 text-lg font-bold tracking-wide mt-0.5" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.9)' }}>
+                        {subtext}
+                    </p>
+                </div>
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-white/20 group-hover:bg-sky-400/40 transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-white">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </div>
+            </a>
         );
 
-        const Protein = ({ type, name, active, done, onDrop }) => {
-            const formatName = (n) => {
-                let result = n.toLowerCase();
-                result = result.replace(/nadh/g, "NADH");
-                result = result.replace(/atp/g, "ATP");
-                result = result.replace(/coenzyme q/g, "coenzyme Q");
-                return result.split(' ').map(word => {
-                    if (["NADH", "ATP", "Q"].includes(word)) return word;
-                    return word.charAt(0).toUpperCase() + word.slice(1);
-                }).join(' ');
+        const App = () => {
+            const audioCtxRef = useRef(null);
+
+            const getCtx = async () => {
+                if (!audioCtxRef.current) {
+                    audioCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtxRef.current.state === 'suspended') {
+                    await audioCtxRef.current.resume();
+                }
+                return audioCtxRef.current;
             };
 
-            let base = "relative flex items-center justify-center transition-all duration-500 shadow-xl ";
-            let color = done ? (name === "ATP synthase" ? "bg-gradient-to-b from-purple-400 to-purple-600 border-purple-300" : "bg-gradient-to-b from-blue-400 to-blue-600 border-blue-300") : "bg-rose-100 border-rose-200 opacity-60";
-            
-            if (type === "large") base += `w-14 h-[110%] rounded-2xl border-2 ${color}`;
-            else if (type === "peripheral") base += `w-15 h-14 rounded-b-2xl border-2 ${color}`;
-            else if (type === "small") base += `w-10 h-10 rounded-full border-2 ${color}`;
-            else if (type === "surface") base += `w-9 h-9 rounded-full self-start mt-[-20px] border-2 ${color}`;
-            else if (type === "turbine") base += `w-20 h-[125%] rounded-t-[3.5rem] border-2 ${color}`;
+            const playMagicChimes = async (isClick = false) => {
+                const ctx = await getCtx();
+                const now = ctx.currentTime;
+                const master = ctx.createGain();
+                master.gain.setValueAtTime(isClick ? 1.5 : 0.8, now);
+                master.connect(ctx.destination);
+
+                const noteCount = isClick ? 12 : 6;
+                const duration = isClick ? 1.5 : 0.8;
+                
+                for (let i = 0; i < noteCount; i++) {
+                    const osc = ctx.createOscillator();
+                    const g = ctx.createGain();
+                    const frequencies = [880, 987, 1174, 1318, 1567, 1760, 2093];
+                    const baseFreq = frequencies[i % frequencies.length];
+                    
+                    osc.type = 'sine';
+                    const startTime = now + (i * (duration / noteCount));
+                    
+                    osc.frequency.setValueAtTime(baseFreq, startTime);
+                    osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.05, startTime + 0.2);
+
+                    g.gain.setValueAtTime(0, startTime);
+                    g.gain.linearRampToValueAtTime(0.3, startTime + 0.05);
+                    g.gain.exponentialRampToValueAtTime(0.001, startTime + 0.4);
+
+                    osc.connect(g);
+                    g.connect(master);
+
+                    osc.start(startTime);
+                    osc.stop(startTime + 0.5);
+                }
+            };
 
             return (
-                <div className={`${base} ${active ? 'scale-125 ring-4 ring-sky-400 z-50 shadow-2xl opacity-100' : ''}`} onDragOver={e => e.preventDefault()} onDrop={e => onDrop && onDrop(e, name)}>
-                    <div className="protein-label text-center px-1 select-none text-black">{done ? formatName(name) : "?"}</div>
-                    {active && (
-                        <div className="absolute -top-12 bg-red-600 text-white text-[10px] px-3 py-1.5 rounded-lg animate-bounce font-black shadow-[0_5px_0_0_rgb(153,0,0)] whitespace-nowrap z-[100] border-2 border-white uppercase tracking-tighter">
-                            Place Label
+                <div className="conquest-bg" onClick={() => getCtx()}>
+                    <div className="glass-panel text-center">
+                        <header className="mb-8">
+                            <h1 className="text-4xl md:text-5xl font-black text-white tracking-tighter animate-title drop-shadow-2xl">
+                                THE GREAT <span className="text-sky-400">ATP</span> CONQUEST
+                            </h1>
+                            <div className="h-1 w-24 bg-sky-400/70 mx-auto mt-4 rounded-full shadow-lg"></div>
+                            
+                            <div className="mt-6 flex flex-col items-center gap-3">
+                                <div className="text-xl text-sky-200 font-bold flex items-center gap-2">
+                                    Hey, <input type="text" className="name-input text-center" placeholder="Write your name" />!
+                                </div>
+                                <div>
+                                    <p className="subtitle-shadow text-xl text-white font-extrabold italic tracking-tight">
+                                        Let's master oxidative phosphorylation!
+                                    </p>
+                                </div>
+                            </div>
+                        </header>
+                        
+                        <div className="max-w-xl mx-auto py-2">
+                            <HubButton 
+                                roman="I"
+                                title="The Mitochondrial Command Center"
+                                subtext="The Components"
+                                link="mitochondrial_command_center.html"
+                                onHover={() => playMagicChimes(false)}
+                                onClick={(e) => { e.preventDefault(); playMagicChimes(true); setTimeout(() => window.location.href=e.currentTarget.href, 800); }}
+                            />
+                            <HubButton 
+                                roman="II"
+                                title="The Amazing Electron Trail"
+                                subtext="Electron Transport Chain"
+                                link="electron_trail.html"
+                                onHover={() => playMagicChimes(false)}
+                                onClick={(e) => { e.preventDefault(); playMagicChimes(true); setTimeout(() => window.location.href=e.currentTarget.href, 800); }}
+                            />
+                            <HubButton 
+                                roman="III"
+                                title="The Proton Odyssey: ATP Victory"
+                                subtext="Chemiosmosis"
+                                link="proton_odyssey.html"
+                                onHover={() => playMagicChimes(false)}
+                                onClick={(e) => { e.preventDefault(); playMagicChimes(true); setTimeout(() => window.location.href=e.currentTarget.href, 800); }}
+                            />
                         </div>
-                    )}
+                    </div>
                 </div>
             );
         };
